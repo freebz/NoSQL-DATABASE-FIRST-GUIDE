@@ -1,0 +1,36 @@
+<style>
+  table th{
+	text-align:right;
+	background-color:silver;
+	padding:5px;
+  }
+  table td{
+	padding:5px;
+  }
+</style>
+
+<h2> Use memcached as cache of Blog </h2>
+
+<table border="1" cellspacing="0">
+  <tr>
+    <th>Title</th>
+	<td><%= @data[:title] %>
+  </tr>
+  <tr>
+    <th>Body</th>
+	<td><%= @data[:body] %>
+  </tr>
+  <tr>
+    <th>Date</th>
+	<td><%= @data[:created_at] %>
+  </tr>
+  <tr>
+    <th>Tags<th>
+	<td><%= @data[:tags].join(', ') %>
+  </tr>
+  <tr>
+    <th>Comments</th>
+	<td><%= @data[:comments].join(', ') %>
+  </tr>
+</table>
+

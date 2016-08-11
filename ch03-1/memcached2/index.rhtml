@@ -1,0 +1,59 @@
+<style>
+  div.ranking{
+	font-size:0.8em;
+	color:gray;
+	font-weight:bold;
+  }
+  div#video{
+	margin-top:20px;
+  }
+  span.rank{
+	font-size:1.5em;
+    color:darkorange;
+  }
+  div.not_found{
+	height:140px;
+	width:303px;
+	background-color:gray;
+    color:#ffffff;
+	text-align:center;
+	font-weight:bold;
+	font-size:240%;
+	padding-top:90px;
+  }
+  div.play_count{
+	font-size:0.8em;
+    color:gray;
+	text-align:right;
+	background-color:lightyellow;
+    width:303px;
+  }
+</style>
+
+<h2><%= link_to "Gyao Top 30 Music Videos in Japan", {:action => "index"},
+{:style => "text-decoration:none"} %></h2>
+
+<div>"<% @date.strftime("%Y-%m-%d") %>"'s Ranking</div>
+<div id="video">
+<% @data.each_with_index do |d,i| -%>
+  <div class="ranking">
+    <span class="rank"><%= i + 1 %>st</span><%= d[:artist] %> - <%= d[:title]%>
+  </div>
+  <% if d[:url].blank? -%>
+    <div class="not_found">
+	  NOT FOUND
+	</div>
+  <% else -%>
+    <object width="303" height="250">
+	  <param name="movie" value="<%= d[:url] %>"></param>
+	  <embed src="<%= d[:url] %>" type="<%= d[:type] %>" width="303"
+height="250"></embed>
+    </object>
+	<div class="play_count"
+	  <span style="margin-right:2px"><%= number_with_delimiter(d[:count]) %> times</span> played
+	</div>
+  <% end -%>
+  </div>
+  <div style="margin=bottom:20px"></div>
+<% end -%>
+

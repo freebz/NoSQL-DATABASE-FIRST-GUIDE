@@ -1,0 +1,39 @@
+<style>
+  table th{
+	text-align:right;
+	background-color:silver;
+    padding:5px;
+  }
+  table td{
+	padding:5px;
+  }
+</style>
+
+<h2>Use Tokyo Tyrant as Posting's cache and Access count's storage</h2>
+<table border="1" cellspacing="0">
+  <tr>
+    <th>title</th>
+	<td><%= @data[:title] %></td>
+  </tr>
+  <tr>
+    <th>body</th>
+	<td><%= @data[:body] %></td>
+  </tr>
+  <tr>
+    <th>Created_at</th>
+	<td><%= @data[:created_at] %>
+  </tr>
+  <tr>
+    <th>tag</th>
+	<td><%= @data[:tags].join(', ') %></td>
+  </tr>
+  <tr>
+    <th>comment</th>
+	<td><%= @data[:comments].join(', ') %></td>
+  </tr>
+  <tr>
+    <th>Access_count</th>
+	<td><%= @access_count %></td>
+  </tr>
+</table>
+

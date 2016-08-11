@@ -1,0 +1,34 @@
+<style>
+  table th{
+	background-color:silver;
+  }
+</style>
+
+<table border="1" cellspaceing="0">
+  <% @answers.each_with_index do |answer, i| -%>
+    <% _keys = answer.keys.keys.select{|k| k =~ /^q/}.sort{|a,b| a.split(/_/)[1].to_i <=> b.split(/_/)[1].to_i} -%>
+	<% if i.zero? -%>
+	  <tr>
+	    <% _keys.each do |key| ~%>
+		  <th><%= key %></t>
+		<% end ~%>
+	  </tr>
+	<% end -%>
+	<tr>
+	  <% _keys.each do |key| -%>
+	    <td>
+		  <% if answer[key].instance_of?(Array) -%>
+		    <%= answer[key].join(', ') %>
+		  <% else -%>
+		    <% if answer[key].instance_of?(String) -%>
+			  <%= answer[key].gsub("\n", "<br />") %>
+			<% else -%>
+			  <%= answer[key] %>
+			<% end -%>
+		  <% end -%>
+		</td>
+	  <% end -%>
+	</tr>
+  <% end -%>
+</table>
+

@@ -1,0 +1,105 @@
+<style>
+  table th{
+	text-align:right;
+  }
+  div.msg{
+	background-color:lightblue;
+	text-align:center;
+	margin-bottom:10px;
+  }
+  span.red{
+    color:red;
+	font-size:0.7em;
+  }
+  div.info{
+	color:gray;
+	font-size:0.8em;
+	margin-bottom:10px;
+  }
+  div.event_title{
+	font-size:1.4em;
+    float:left;
+  }
+  div.event_date{
+	font-size:1.2em;
+    color:#b48a76;
+	padding-left:5px;
+    float:left;
+  }
+  div.event_url{
+	font-size:0.8em;
+  }
+  div.event_description{
+	color:gray;
+	font-size:0.8em;
+	margin-bottom:10px;
+  }
+  div.condition{
+	padding:5px;
+	background-color:silver;
+	margin-bottom:20px;
+  }
+  div#history{
+	margin-bottom:20px;
+  }
+</style>
+
+<h2><%= link_to "ATND Search Application", {:action => "index"}, {:style => "text-decoration:none"} %></h2>
+
+<% if flash[:msg] -%>
+  <div class="msg"><%= flash[:msg] %></div>
+<% end -%>
+
+<% form_tag({}, {:method => "get"}) do -%>
+  <table>
+    <tr>
+	  <th>Keyword</th>
+	  <td><%= text_field_tag :k, params[:k] -%></td>
+	  <td></td>
+	</tr>
+	<tr>
+	  <th>Twitter ID</th>
+	  <td><%= text_field_tag :t, params[:t] -%></td>
+	  <td><span class="red">*You can search when login or logout with Twitter ID</span></td>
+	</tr>
+  </table>
+  <%= submit_tag 'Searching' %></th>
+<% end -%>
+
+<% if !@histories.blank? -%>
+  <div id="history">
+    <div>Recently Searched</div>
+	<% @histories.each do |history| -%>
+	  <% keyword, twitter_id = history.split(/\|/) -%>
+
+	  <% if !keyword.blank? && !twitter_id.blank? -%>
+	    <% body = "#{keyword}+#{twitter_id}" -%>
+	  <% else -%>
+	    <% if !keyword.blank? -%>
+		  <% body = "#{twitter_id}" -%>
+		<% elsif !twitter_id.blank? -%>
+		  <% body = "#{keyword}" -%>
+		<% end -%>
+	  <% end -%>
+
+	  <%= link_to body, :action => "index", :k => keyword, :t => twitter_id %>
+	<% end -%>
+  </div>
+<% end -%>
+
+<% if !@data.blank? -%>
+  <div class="condition">
+    <% list = [] -%>
+	<% list << %Q!Keyword "<span style='font-weight:bold'>#{params[:k]}</span>"! if !params[:k].blan? %>
+	<% list << %Q!Twitter_id""<span style='font-weight:bold'>#{params[:t]}</span>"! if !params[:t].blank? %>
+	<%= list.join(", ") -%> Searched by
+  </div>
+  <% @data.each do |d| -%>
+    <div class="event_title"><%= d[:title] %></div>
+	<div class="event_date">(<%= Date.parse(d[:started_at]).strftime("%Y-%m-%d") %>)</div>
+	<div style="clear:left"></div>
+	<div class="event_url"><%= link_to d[:url], d[:url], :popup => true %></div>
+	<div class="event_description"><%= strip_tags(d[:description] %>...</div>
+  <% end -%>
+<% end -%>
+

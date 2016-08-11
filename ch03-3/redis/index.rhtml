@@ -1,0 +1,100 @@
+<style>
+  div.msg{
+	background-color:lightblue;
+	text-align:center;
+	margin-bottom:10px;
+  }
+  div.timeline_user{
+	color:gray;
+	float:left;
+  }
+  div.timeline_user a{
+	color:#2276BB;
+	font-weight:bold;
+	text-decoration:none;
+  }
+  div.timeline_body{
+	padding-left:5px;
+    float:left;
+  }
+  div.timeline_date{
+	color:gray;
+	font-size:0.8em;
+	margin-bottom:10px;
+  }
+  div.info{
+	color:gray;
+	font-size:0.8em;
+	padding-bottom:10px;
+  }
+  div#page_title{
+	color:darkolivegreen;
+	border-top:1px solid gray;
+	border-bottom:1px solid gray;
+    padding:5px;
+	font-weight:bold;
+	margin-bottom:20px;
+  }
+  span#follow{
+	font-size:0.8em;
+  }
+</style>
+
+<h2><%= link_to "Web Application like Twitter", {:action => "index"}, {:style => "text-decoration:none"} %></h2>
+
+<% if flash[:msg] -%>
+  <div class="msg"><%= flash[:msg] %></div>
+<% end -%>
+
+<div class="info">
+  <% if @user_id -%>
+    welcome <%= @user_name %> | <%= link_to "logout", :action => "logout" %>
+  <% else -%>
+    <%= link_to "Join user", :action => "signup" %> | <%= link_to "Login", :action => "login" %>
+  <% end -%>
+</div>
+
+<% if @user_id -%>
+  <% form_tag :action => "post" do -%>
+    <span style="padding-right:3px">one word</span>
+	<%= text_field_tag :message, nil, :size => 60 %>
+	<%= submit_tag 'transmit' %></th>
+  <% end -%>
+<% end -%>
+
+<% if @page_title -%>
+  <div id="page_title">
+    <%= @page_title %>
+	<% if @page_title != "this is your page" && @user_id -%>
+	  <span id="follow">
+	    <% user_id = @redis.hget :user_info, "#{params[:id]}:user_id" -%>
+		  <span style="color:pink">following already</span>
+		<% else -%>
+		  <%= link_to_remote "follow", :update => "follow", :url => {:action => "follow", :id => params[:id]} %>
+		<% end -%>
+	  </span>
+	<% end -%>
+  </div>
+<% end -%>
+
+<% @timeline.each do |t| -%>
+  <% user_id, created_at, message = tl.split(/\|/) -%>
+  <%
+    sec = Time.now - Time.parse(created_at)
+	if sec < 60
+	  diff = "#{sec.round} seconds ago"
+	elsif sec < 60 * 60
+	  diff = "#{(sec / 60).round} minutes ago"
+	elsif sec < 60 * 60 * 24
+	  diff = "#{(sec / (60 * 60)).round} hours ago"
+	else
+	  diff = "#{(sec / (60 * 60 * 24)).round} days ago"
+	end
+  -%>
+  <% user_name = @redis.hget :user_info, "#{user_id}:user_name" -%>
+  <div class="timeline_user"><%= link_to user_name, :action => "show", :id => user_name %></div>
+  <div class="timeline_body"><%= message -%></div>
+  <div style="clear:left"></div>
+  <div class="timeline_date"><%= diff %> posted</div>
+<% end -%>
+

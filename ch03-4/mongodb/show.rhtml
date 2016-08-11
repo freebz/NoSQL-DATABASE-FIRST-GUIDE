@@ -1,0 +1,90 @@
+<style>
+  div.header{
+	color:gray;
+	text-align:right;
+	padding-right:20px;
+	vertical-align:text-top;
+    float:left;
+  }
+  div.qeustion{
+	float:left;
+  }
+  div.title{
+	font-weight:bold;
+  }
+  div.clear{
+	clear:left;
+	padding-bottom:20px;
+  }
+  span.require{
+	color:red;
+	font-size:0.8em;
+  }
+  div.enquete_title{
+	font-weight:bold;
+	background-color:silver;
+	margin-bottom:30px;
+  }
+  div.msg{
+	background-color:lightblue;
+	text-align:center;
+	margin-bottom:10px;
+  }
+  span.require{
+	color:red;
+	background-color:lightyellow;
+	font-weight:bold;
+  }
+</style>
+
+<h2><%= link_to "Enquete Sample", {:action => "index"}, {:style => "text-decoration:none"} %></h2>
+
+<% if flash[:msg] -%>
+  <div class="msg"><%= flash[:msg] %></div>
+<% end -%>
+
+<div class="enquete_title"><%= @enquete.name %></div>
+
+<% form_for :answer, :url => {:action => "create"} do |f| -%>
+  <% @enquete.questions.sort{|a,b| a.qeustion_number.split(/_/)[1].to_i <=> b.qeustion_number.split(/_/)[1].to_i}.each do |q| -%>
+    <% n = q.question_number.split(/_/)[1].to_i -%>
+	<div class="header">Question<%= n %></div>
+	<div class="question">
+	  <% if @err_msg && @err_msg[q.question_number] -%>
+	    <span class="err_msg"><%= @err_msg[q.question_number] %></span>
+	  <% end -%>
+	  <div class="title"><%= q.body %> <%= %Q!<span class="require">*Required</span>! if q.required_column %></div>
+	  <% if q.type == 'text' -%>
+	    <%= f.text_field q.question_number %>
+	  <% elsif q.type == 'radio' -%>
+	    <% q.choices.each_with_index do |choice, i| -%>
+		  <%= check_box_tag "answer[#{q.question_number}][]", i, false, :id => "answer_#{q.question_number}_#{i}" %>
+		  <label for="answer_<%= q.question_number %>_<%= i %>"><%= choice %></label><br />
+        <% end -%>
+      <% elsif q.type == 'checkbox' -%>
+        <% q.choices.each_with_index do |choice, i| -%>
+          <%= f.radio_button q.question_number, i %>
+          <label for="answer_<%= q.question_number %>_<%= i %>"><%= choice %></label><br />
+        <% end -%>
+      <% elsif q.type == 'pulldown' -%>
+        <%
+          list = []
+          q.choices.each_with_index do |choice, i|
+            list << [choice, i]
+          end
+        -%>
+        <%= f.select q.question_number, list %>
+      <% elsif q.type == 'textarea' -%>
+        <%= f.text_area q.question_number, :size => '40x5' %>
+      <% end -%>
+    </div>
+    <div class="clear"></div>
+  <% end -%>
+
+  <%= f.hidden_field :user_id, :value => @user.id %>
+  <%= f.hidden_field :enquete_id, :value => @enquete.id %>
+
+  <div><%= f.submit 'submit', :style => "font-size:20px" %></div>
+<% end -%>
+
+

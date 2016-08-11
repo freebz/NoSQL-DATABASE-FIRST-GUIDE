@@ -1,0 +1,6 @@
+# Logfile created on 2016-08-04 12:07:33 +0900 by logger.rb/v1.2.7
+I, [2016-08-04T12:07:33.157402 #1217]  INFO -- : [2016/08/04 12:07:33] set server host : localhost port : 1978 role : write
+F, [2016-08-04T12:07:33.160729 #1217] FATAL -- : [2016/08/04 12:07:33] TokyoTyrantConnectError host : localhost port : 1978
+I, [2016-08-04T12:08:23.923174 #1219]  INFO -- : [2016/08/04 12:08:23] set server host : 127.0.0.1 port : 1978 role : write
+I, [2016-08-04T12:09:36.653354 #1277]  INFO -- : [2016/08/04 12:09:36] set server host : 127.0.0.1 port : 1978 role : write
+I, [2016-08-04T12:46:38.126713 #1367]  INFO -- : [2016/08/04 12:46:38] set server host : 127.0.0.1 port : 1978 role : write
